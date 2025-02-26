@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Practica01</title>
+    </head>
+    <body>
+        <section th:fragment="botonesAgregar" class="py-4 mb-4 bg-light text-center">
+            <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#agregarArbol">
+                <i class="fas fa-plus"></i> Agregar Árbol
+            </button>
+        </section>
+        <section th:fragment="agregarArboles">
+            <div id="agregarArbol" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Agregar Árbol</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{/arbol/guardar}" th:object="${arbol}" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nombre_comun">Nombre Común</label>
+                                    <input type="text" class="form-control" name="nombre_comun" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tipo_flor">Tipo de Flor</label>
+                                    <input type="text" class="form-control" name="tipo_flor" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dureza_madera">Dureza de la Madera</label>
+                                    <input type="text" class="form-control" name="dureza_madera" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="altura_promedio">Altura Promedio</label>
+                                    <input type="text" class="form-control" name="altura_promedio" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edad_promedio">Edad Promedio</label>
+                                    <input type="text" class="form-control" name="edad_promedio" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagenFile">Imagen</label>
+                                    <input type="file" class="form-control" name="imagenFile" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="activo">Activo</label>
+                                    <input type="checkbox" name="activo" checked />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section th:fragment="listadoArboles" class="container mt-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="text-center mb-4">Listado de Árboles</h2>
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre Común</th>
+                                <th>Flor</th>
+                                <th>Dureza</th>
+                                <th>Altura</th>
+                                <th>Activo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="arbol, contador : ${arboles}">
+                                <td>[[${contador.count}]]</td>
+                                <td>[[${arbol.nombre_comun}]]</td>
+                                <td>[[${arbol.tipo_flor}]]</td>
+                                <td>[[${arbol.dureza_madera}]]</td>
+                                <td>[[${arbol.altura_promedio}]]</td>
+                                <td>[[${arbol.activo} ? 'Activo' : 'Inactivo']]</td>
+                                <td>
+                                    <a th:href="@{/arbol/eliminar/}+${arbol.id_arbol}" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                    <a th:href="@{/arbol/modificar/}+${arbol.id_arbol}" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section th:fragment="editarArbol">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center mb-4">Editar Árbol</h2>
+                <form th:action="@{/arbol/modificar}" th:object="${arbol}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{id_arbol}"/>
+                    <div class="mb-3">
+                        <label for="nombre_comun">Nombre Común</label>
+                        <input type="text" class="form-control" th:field="*{nombre_comun}" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipo_flor">Tipo de Flor</label>
+                        <input type="text" class="form-control" th:field="*{tipo_flor}"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dureza_madera">Dureza de la Madera</label>
+                        <input type="text" class="form-control" th:field="*{dureza_madera}"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="altura_promedio">Altura Promedio</label>
+                        <input type="text" class="form-control" th:field="*{altura_promedio}"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagenFile">Imagen</label>
+                        <input type="file" class="form-control" name="imagenFile"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="activo">Activo</label>
+                        <input type="checkbox" th:field="*{activo}"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+    </body>
+</html>
